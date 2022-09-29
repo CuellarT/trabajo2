@@ -1,3 +1,4 @@
+//http://localhost:4000/api/v1/messages//
 const { Router} = require("express")
 const router = Router()
 const{
@@ -10,7 +11,7 @@ const{
 } = require("../controllers/messages")
 
     router.get("/",rootMessage)
-    router.get("/hi",hiMessage)
+    router.get("/hi/:name/:edad",hiMessage)
     router.get("/bye",byeMessage)
 
     router.post("/", postMessage)//creo o añado//
