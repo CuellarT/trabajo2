@@ -1,5 +1,5 @@
 const{Router} = require("express")
-const {getUsers , getUserByID, deleteUserByID, addUser} = require( "../controllers/usuarios")
+const {getUsers , getUserByID, deleteUserByID, addUser,updateUserByUsuario ,signIn } = require( "../controllers/usuarios")
 const router = Router()
 
 // http://localhost:4000/api/v1/users/id/2
@@ -12,6 +12,11 @@ router.get("/id/:id", getUserByID)
 
 //POS//
 router.post("/",addUser)
+router.post("/signin " ,signIn)
+///pacht//
+
+//Put//
+router.put("/" , updateUserByUsuario)
 
 
 router.delete("/id/:id", deleteUserByID)
