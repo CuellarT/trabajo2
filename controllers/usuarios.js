@@ -42,7 +42,7 @@ const getUserByID = async (req =request ,res =response ) =>{
 
         //Generamos la consultas 
 
-        const users = await conn.query( `SELECT * FROM Usuario WHERE ID = ${id} ` , (error) => { if (error) throw error })
+        const users = await conn.query( `SELECT * FROM Usuario WHERE ID = ?`,[id] , (error) => { if (error) throw error })
 
         console.log(users)
 
@@ -123,7 +123,7 @@ const addUser = async (req =request ,res =response ) =>{
     try {
         conn = await pool.getConnection() // Realizamos la conexion 
 
-        const [userExist]= await conn.query( `SELECT Usuario FROM Usuario WHERE Usuario = '${Usuario}'`)
+        const [userExist]= await conn.query( `SELECT Usuario FROM Usuario WHERE Usuario = '?'`[Usuario])
 
         if (userExist){
             res.status(400).json({msg:`El usuario ${Usuario} ya se encuentra registrado.`})
@@ -250,7 +250,7 @@ const signIn = async (req =request ,res =response ) =>{
 
         //Generamos la consultas 
 
-        const [user] = await conn.query( `SELECT Contrasena,Activo From Usuario  WHERE Usuario = ${Usuario} ` , (error) => { if (error) throw error })
+        const [user] = await conn.query( `SELECT Contrasena,Activo From Usuario  WHERE Usuario = '${Usuario}' ` , (error) => { if (error) throw error })
 
         
         if (!user || user.Activo ===`N`){ // En caso de no haber registros lo informamo 
@@ -279,7 +279,53 @@ const signIn = async (req =request ,res =response ) =>{
 
 }
 
+const passuser = async (req =request ,res =response ) =>{
+    const {Usuario ,Contrasena,ContrasenaNueva} = req.body 
 
 
+    if (!Usuario ||  !Contrasena || !ContrasenaNueva){
+        res.status(400).json({msg:"Faltan Datos."})
+        return
+    }
 
-module.exports = {getUsers , getUserByID, deleteUserByID , addUser,updateUserByUsuario,signIn  }
+    let conn; 
+
+    try {
+        conn = await pool.getConnection() // Realizamos la conexion 
+
+
+        //Generamos la consultas 
+
+        const [user] = await conn.query( `SELECT Contrasena  From Usuario  WHERE Usuario = '${Usuario}' ` , (error) => { if (error) throw error })
+        
+        if(!Contrasena){
+            res.status(404).json({msg:  "El usuario o contraseña que se ingreso no son validos "})
+            return
+
+        }
+        const result = await conn.query( `UPDATE Usuario SET Contrasena WHERE ID = ${id} ` , (error) => { if (error) throw error })
+
+        const Contrasena = bcryptjs.compareSync(Contrasena, user.Contrasena)
+        const salt = bcryptjs.genSaltSync()
+       
+        
+        if(!ContrasenaNueva) {
+            res.status(404).json({msg:  "El usuario o contraseña que se ingreso no son validos "})
+            return
+
+        }
+        const ContrasenaNueva = bcryptjs.hashSync(ContrasenaNueva,salt)
+        
+        res.json({msg:"El usuario se ha cambiado  correctamente"}) // se manda la lista de usuarios 
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({msg: error}) //Informamos el error 
+    } finally {
+        if (conn) conn.end() // Termina la conecion
+
+    }
+
+
+}
+
+module.exports = {getUsers , getUserByID, deleteUserByID , addUser,updateUserByUsuario,signIn,passuser}

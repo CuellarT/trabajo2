@@ -1,6 +1,7 @@
 const express = require("express")
 const messagesRouter = require("./routes/messages")
 const usuariosRouter = require("./routes/usuarios")
+const dragonballRouter = require("./routes/Dragon")
 const cors= require("cors")
 class server{
     constructor(){
@@ -8,6 +9,7 @@ class server{
         this.port = process.env.PORT
         this.paths ={
             messages:"/api/v1/messages",
+            dragonball:"/api/v1/Dragon",
             usuarios:"/api/v1/usuarios"
         }
         this.middlewares()
@@ -18,7 +20,8 @@ class server{
 
 
         this.app.use(this.paths.messages,messagesRouter),
-        this.app.use(this.paths.usuarios,usuariosRouter)
+        this.app.use(this.paths.usuarios,usuariosRouter),
+        this.app.use(this.paths.dragonball,dragonballRouter)
     }
 
     middlewares(){
