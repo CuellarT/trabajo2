@@ -127,7 +127,7 @@ const addDragon = async ( req =request ,res = response) =>{
             '${Activo}')`,(error) => { if(error) throw error})
             
         if (result.affecterdRows === 0){ //Encaso de no haber registro lo informamo
-             res.status(400).json({msg:`No sepudo agregar el usuario`})
+             res.status(400).json({msg:`No sepudo agregar el Guerrero`})
              return   
 
             }

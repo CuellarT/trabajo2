@@ -205,14 +205,15 @@ const updateUserByUsuario = async (req =request ,res =response ) =>{
 
         //Generamos la consultas 
 
-       const result = await conn.query( `UPDATE Usuario SET 
-        Nombre = '${Nombre}', 
-        Apellidos= '${Apellidos}',
-        Edad = ${Edad},
-        ${ Genero ? `Genero='${Genero}',`: '' }
-        Fecha_Nacimiento = '${Fecha_Nacimiento}'
-        WHERE 
-            Usuario ='${Usuario}'`,(error) => { if (error) throw error })
+       const result = await conn.query(updateUserByUsuario(
+        Nombre,
+        Apellidos,
+        Edad,
+        Genero,
+        Usuario,
+        Fecha_Nacimiento
+       )
+        ,(error) => { if (error) throw error })
 
         if (result.affecterdRows === 0 ){ // En caso de no haber registros lo informamo 
            res.status(404).json({msg:  `No sepudo Actualizar el usuario  el usuario`})
